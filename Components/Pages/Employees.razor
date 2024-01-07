@@ -1,0 +1,89 @@
+﻿@page "/employees"
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@using Scores.Data
+@using Scores.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject ApplicationDbContext dbContext
+
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Employees</PageTitle>
+
+<div class="d-flex flex-column gap-4">
+    <div class="d-flex align-items-center justify-content-between px-2">
+        <div>
+            <h4 class="m-0">Employees</h4>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="newEmployee">Add Employee</a>
+        </div>
+    </div>
+
+    <div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Positive Points</th>
+                    <th class="text-center">Negative Points</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var employee in employees)
+                {
+                    <tr>
+                        <td class="text-center">@employee.Name</td>
+                        <td class="text-center">@employee.Title</td>
+                        <td class="text-center">@employee.PositivePoints</td>
+                        <td class="text-center">@employee.NegativePoints</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-danger" @onclick="() => DeleteEmployeeAsync(employee)">Delete</button>
+                                <button class="btn btn-outline-secondary" @onclick="() => EditEmployee(employee)">Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code{
+    public List<Employee> employees = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetEmployeesAsync();
+    }
+
+    private async Task GetEmployeesAsync()
+    {
+        employees = await dbContext.Employees.ToListAsync();
+    }
+
+    private async Task DeleteEmployeeAsync(Employee employee)
+    {
+        var employeeToDelete = await dbContext.Employees.FindAsync(employee.Id);
+
+        if (employeeToDelete != null)
+        {
+            dbContext.Employees.Remove(employeeToDelete);
+            await dbContext.SaveChangesAsync();
+            await GetEmployeesAsync();
+        }
+    }
+
+    private void EditEmployee(Employee employee)
+    {
+        NavigationManager.NavigateTo($"/employees/{employee.Id}");
+    }
+}

@@ -1,0 +1,94 @@
+﻿@page "/employees/{employeeId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@using Scores.Data
+@using Scores.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject ApplicationDbContext dbContext
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Roles = "Admin")]
+
+<div>
+    <div class="d-md-flex align-items-center justify-content-between gap-2">
+        <div class="mb-3 col">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" @bind="clonedEmployee.Name">
+        </div>
+        <div class="mb-3 col">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" @bind="clonedEmployee.Title">
+        </div>
+        <div class="mb-3 col">
+            <label for="Description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="Description" @bind="clonedEmployee.Description">
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <div class="mb-3">
+            <label for="PositivePoints" class="form-label">Positive Points</label>
+            <input type="number" class="form-control" id="PositivePoints" @bind="clonedEmployee.PositivePoints">
+        </div>
+        <div class="mb-3">
+            <label for="NegativePoints" class="form-label">Negative Points</label>
+            <input type="number" class="form-control" id="NegativePoints" @bind="clonedEmployee.NegativePoints">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" @onclick="OnSavingEdits">Save</button>
+</div>
+
+@code {
+    [Parameter] public int employeeId { get; set; }
+    private Employee employeeToEdit = new Employee();
+    public Employee clonedEmployee = new Employee();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetEmployee();
+    }
+
+    private async Task GetEmployee()
+    {
+        employeeToEdit = await dbContext.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+
+        if (employeeToEdit != null)
+        {
+            clonedEmployee = new Employee
+                {
+                    Name = employeeToEdit.Name,
+                    Title = employeeToEdit.Title,
+                    Description = employeeToEdit.Description,
+                    NegativePoints = employeeToEdit.NegativePoints,
+                    PositivePoints = employeeToEdit.PositivePoints
+                };
+        }
+    }
+
+    private async Task OnSavingEdits()
+    {
+        employeeToEdit.Name = clonedEmployee.Name;
+        employeeToEdit.Title = clonedEmployee.Title;
+        employeeToEdit.Description = clonedEmployee.Description;
+        employeeToEdit.PositivePoints = clonedEmployee.PositivePoints;
+        employeeToEdit.NegativePoints = clonedEmployee.NegativePoints;
+
+        dbContext.Employees.Update(employeeToEdit);
+        await dbContext.SaveChangesAsync();
+        NavigateToEmployeesList();
+    }
+
+    private void OnCancel()
+    {
+        employeeToEdit = new Employee();
+        NavigateToEmployeesList();
+    }
+
+    private void NavigateToEmployeesList()
+    {
+        NavigationManager.NavigateTo("/employees");
+
+    }
+}

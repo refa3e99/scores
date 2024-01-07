@@ -1,0 +1,49 @@
+﻿@page "/newEmployee"
+
+@using Microsoft.AspNetCore.Authorization
+@using Scores.Data
+@using Scores.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject ApplicationDbContext dbContext
+@attribute [Authorize(Roles = "Admin")]
+
+<div>
+    <div class="d-flex align-items-center justify-content-between gap-2">
+        <div class="mb-3 col">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" @bind="newEmployee.Name">
+        </div>
+        <div class="mb-3 col">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" @bind="newEmployee.Title">
+        </div>
+        <div class="mb-3 col">
+            <label for="Description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="Description" @bind="newEmployee.Description">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" @onclick="AddEmployee">Add Employee</button>
+</div>
+
+@code {
+    Employee newEmployee = new Employee();
+
+    private void AddEmployee()
+    {
+        if (!string.IsNullOrEmpty(newEmployee.Name) && !string.IsNullOrEmpty(newEmployee.Title))
+        {
+            dbContext.Employees.Add(newEmployee);
+            dbContext.SaveChanges();
+            NavigateToEmployeesList();
+        }
+    }
+
+    private void NavigateToEmployeesList()
+    {
+        NavigationManager.NavigateTo("/employees");
+    }
+}

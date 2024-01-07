@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\005044\\source\\repos\\Scores\\Scores\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\Scores.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Scores.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\005044\\source\\repos\\Scores\\Scores\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\005044\\source\\repos\\Scores\\Scores\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\005044\\source\\repos\\Scores\\Scores\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\005044\\source\\repos\\Scores\\Scores\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.Scores.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.build.Scores.props",
+      "PackagePath": "build\\Scores.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Scores.props",
+      "PackagePath": "buildMultiTargeting\\Scores.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildTransitive.Scores.props",
+      "PackagePath": "buildTransitive\\Scores.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

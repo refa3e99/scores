@@ -1,0 +1,76 @@
+﻿@page "/history/{employeeId:int}"
+@using Scores.Data
+@using Scores.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject ApplicationDbContext dbContext
+@inject NavigationManager NavigationManager
+
+
+<div>
+    <p class="fw-bold">@employee.Name</p>
+    <div>
+        @if (logs.Count > 0)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Points</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var log in logs)
+                    {
+                        if (log.Action == "Add Negative Points" || log.Action == "Clear Positive Points")
+                        {
+                            <tr class="table-danger">
+                                <td class="text-center">@log.Date</td>
+                                <td class="text-center">@log.PointsAdded</td>
+                                <td class="text-center">@log.Action</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr class="table-success">
+                                <td class="text-center">@log.Date</td>
+                                <td class="text-center">@log.PointsAdded</td>
+                                <td class="text-center">@log.Action</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Data Found</p>
+        }
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public int employeeId { get; set; }
+    public List<ActionLog> logs = new List<ActionLog>();
+    public Employee employee = new Employee();
+
+    protected override void OnInitialized()
+    {
+        GetEmployee();
+        GetLogs();
+    }
+
+    private void GetEmployee()
+    {
+        employee = dbContext.Employees.Where(e => e.Id == employeeId).FirstOrDefault();
+    }
+
+    private void GetLogs()
+    {
+        logs = dbContext.ActionLogs.Where(l => l.EmployeeId == employeeId).OrderByDescending(l => l.Date).ToList();
+    }
+}

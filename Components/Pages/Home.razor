@@ -1,0 +1,63 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@using Scores.Data
+@using Scores.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject ApplicationDbContext dbContext
+
+
+<PageTitle>Home</PageTitle>
+
+<div class="d-flex flex-column gap-4">
+    <div class="d-flex align-items-center justify-content-between px-2">
+        <div>
+            <h4 class="m-0">Employees</h4>
+        </div>
+    </div>
+
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Positive Points</th>
+                    <th class="text-center">Negative Points</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var (employee, index) in employees.Select((emp, i) => (emp, i+1)))
+                {
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td class="text-center">@employee.Name</td>
+                        <td class="text-center">@employee.Title</td>
+                        <td class="text-center">@employee.PositivePoints</td>
+                        <td class="text-center">@employee.NegativePoints</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<Employee> employees = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetEmployeesAsync();
+    }
+
+    private async Task GetEmployeesAsync()
+    {
+        employees = await dbContext.Employees.ToListAsync();
+    }
+}
